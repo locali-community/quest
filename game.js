@@ -6,8 +6,8 @@ const G = {
   HUNT_START:     new Date('2026-03-07T12:00:00'),
   HUNT_END:       new Date('2026-03-11T23:59:00'),
 
-  IG_POST_A:  'https://www.instagram.com/locali_bielefeld/', // replace with real post URL
-  IG_POST_B:  'https://www.instagram.com/locali_bielefeld/', // replace with real post URL
+  IG_POST_A:  'https://www.instagram.com/locali_studentlife?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==', // replace with real post URL
+  IG_POST_B:  'https://www.instagram.com/locali_studentlife?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==', // replace with real post URL
   IG_PROFILE: 'https://www.instagram.com/locali_studentlife?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==',
 
   KAKTUS_CODE: 'KAKTUS52',   // sticker inside Kaktus — individual, no expiry
@@ -115,24 +115,24 @@ const G = {
   // ── Google Forms ────────────────────────────────────────────
   FORMS: {
     TEAM: {
-      ACTION:    'https://docs.google.com/forms/d/e/FORM_ID_1/formResponse',
-      PLAYER:    'entry.100000001',
-      PARTNER:   'entry.100000002',
-      TEAMNAME:  'entry.100000003',
-      ROLE:      'entry.100000004',
-      TIMESTAMP: 'entry.100000005',
+      ACTION:    'https://docs.google.com/forms/d/e/1FAIpQLSf0eop7Fl2LL82N6VG9f-4ZCXM5Un3zBir7cyC2FsVnp9OKBA/viewform?usp=pp_url',
+      PLAYER:    'entry.415857790',
+      PARTNER:   'entry.639059933',
+      TEAMNAME:  'entry.419392051',
+      ROLE:      'entry.241583206',
+      TIMESTAMP: 'entry.18026000',
     },
     KAKTUS: {
-      ACTION:    'https://docs.google.com/forms/d/e/FORM_ID_2/formResponse',
-      PLAYER:    'entry.200000001',
-      TIMESTAMP: 'entry.200000002',
+      ACTION:    'https://docs.google.com/forms/d/e/1FAIpQLSdMqqiP5mVW1kyPWEomCwBF_8a397JpILyRWiFCJZ6AdpuozQ/viewform?usp=pp_url',
+      PLAYER:    'entry.2061720601',
+      TIMESTAMP: 'entry.711780359',
     },
     WINNER: {
-      ACTION:    'https://docs.google.com/forms/d/e/FORM_ID_3/formResponse',
-      PLAYER:    'entry.300000001',
-      PARTNER:   'entry.300000002',
-      TEAMNAME:  'entry.300000003',
-      TIMESTAMP: 'entry.300000004',
+      ACTION:    'https://docs.google.com/forms/d/e/1FAIpQLSctHLTgJAx7jO6UmsXsI6hnJJdhVADKxIqwIh8aQPyZ_G7fFA/viewform?usp=pp_url',
+      PLAYER:    'entry.2053224380',
+      PARTNER:   'entry.1249763927',
+      TEAMNAME:  'entry.734626734',
+      TIMESTAMP: 'entry.1927500522',
     },
   },
 
