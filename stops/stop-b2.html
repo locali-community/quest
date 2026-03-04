@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LOCALI — Stop B2</title>
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<div class="page">
+  <div class="topbar f1"><div class="logo">LOC<span>A</span>LI</div><div class="step-tag">Stop B2</div></div>
+  <div class="role-pill b f1">Player B — The Historian</div>
+
+  <!-- Not registered -->
+  <div id="noHandle" class="hidden">
+    <div class="card c-red f2" data-tag="Not Registered">
+      <h3>Register first</h3>
+      <p>You haven't started the game yet. Go back to the LOCALI home page to set up your account.</p>
+    </div>
+    <a href="../index.html" class="btn f3">← Start from the beginning</a>
+  </div>
+
+  <!-- Wrong role -->
+  <div id="wrongRole" class="hidden">
+    <div class="alert alert-err f2">This stop is for Player B — The Historian. You have the other role.</div>
+    <a href="../hunt.html" class="btn btn-ghost f3">← Back to my hunt</a>
+  </div>
+
+  <!-- Already collected -->
+  <div id="alreadyDone" class="hidden">
+    <div class="alert alert-ok f2">✓ You already collected this fragment.</div>
+    <div class="fragment-display f2">
+      <div class="frag-label">Your Fragment — Stop B2</div>
+      <div class="frag-value b" id="alreadyFrag"></div>
+      <div class="frag-hint" id="alreadyHint"></div>
+    </div>
+    <div class="card c-red f3" data-tag="Next Location — Clue">
+      <h3>Your next stop</h3>
+      <p id="alreadyNextClue" style="font-size:.78rem;color:var(--muted2);line-height:1.85;margin-top:.3rem;"></p>
+    </div>
+    <a href="../hunt.html" class="btn f3" style="margin-top:.5rem;">← Back to hunt overview</a>
+  </div>
+
+  <!-- Code entry — coordinates shown immediately -->
+  <div id="codeEntry" class="hidden">
+    <div class="hero f2">
+      <div class="hero-label">Stop 2 of 3 — Player B — The Historian</div>
+      <h1>Go to this location</h1>
+      <p>Head to the coordinates below. Once you arrive, find the small LOCALI sticker and enter the code printed on it.</p>
+    </div>
+
+    <div class="card c-gold f2" data-tag="Your Destination">
+      <h3 id="coordDisplay" style="font-family:var(--mono);font-size:1.05rem;color:var(--gold);letter-spacing:.04em;"></h3>
+      <a id="mapsLinkEntry" href="#" target="_blank" class="map-btn" style="margin-top:.6rem;">Open in Google Maps →</a>
+    </div>
+
+    <div class="alert alert-info f3">🔍 Once you're there — find the small LOCALI sticker on a wall, sign, bench, or post near the landmark.</div>
+
+    <div class="field f3">
+      <label for="stickerCode">Code on the LOCALI sticker</label>
+      <input type="text" id="stickerCode"
+        placeholder="e.g. ABC-1"
+        autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" />
+      <div class="field-hint">Enter exactly what you see — dashes and numbers included.</div>
+    </div>
+    <div id="codeErr" class="alert alert-err hidden"></div>
+    <button class="btn btn-gold f4" onclick="validateCode()">Submit Code →</button>
+  </div>
+
+  <!-- Fragment reveal -->
+  <div id="fragReveal" class="hidden">
+    <div class="alert alert-ok f1">✓ Code accepted — Stop B2 complete.</div>
+
+    <div class="fragment-display f2">
+      <div class="frag-label">Your Encoded Fragment — Stop B2</div>
+      <div class="frag-value b" id="fragVal"></div>
+      <div class="frag-hint" id="fragHint"></div>
+      <div class="frag-count">Stop 2 of 3</div>
+    </div>
+
+    <div class="alert alert-info f3">
+      ⚠ Write this down <strong>exactly</strong> — every symbol and character matters. Do not share it until you have all 3.
+    </div>
+
+    <div class="card c-red f4" data-tag="Your Next Location — Clue">
+      <h3>Head to your next stop</h3>
+      <div id="nextClueReveal" class="hidden">
+        <p id="nextClueBody" style="margin-top:.4rem;font-size:.8rem;line-height:1.9;color:var(--muted2);"></p>
+      </div>
+    </div>
+
+    <button class="btn btn-gold f5" onclick="saveAndContinue()">Saved — Continue →</button>
+  </div>
+
+  <div class="foot">LOCALI 2.0 · Stop B2</div>
+</div>
+
+<script src="../game.js"></script>
+<script>
+  const STOP_ID   = 'b2';
+  const STOP_ROLE = 'B';
+  const handle    = G.get(G.K.HANDLE);
+  const role      = G.get(G.K.ROLE);
+
+  function show(id) { document.getElementById(id).classList.remove('hidden'); }
+
+  if (!handle) {
+    show('noHandle');
+  } else if (role && role !== STOP_ROLE) {
+    show('wrongRole');
+  } else {
+    if (!role) G.set(G.K.ROLE, STOP_ROLE);
+    const stop = G.STOPS[STOP_ROLE].find(s => s.id === STOP_ID);
+    const done = G.getStops();
+
+    if (done.includes(STOP_ID)) {
+      show('alreadyDone');
+      document.getElementById('alreadyFrag').textContent = stop.fragment;
+      document.getElementById('alreadyHint').textContent = stop.hint;
+      const anc = document.getElementById('alreadyNextClue');
+      if (anc && stop.next_clue) anc.textContent = stop.next_clue;
+    } else {
+      show('codeEntry');
+      document.getElementById('coordDisplay').textContent = stop.coords;
+      document.getElementById('mapsLinkEntry').href = stop.gmaps;
+    }
+  }
+
+  function validateCode() {
+    const val  = document.getElementById('stickerCode').value.trim().toUpperCase().replace(/\s/g, '');
+    const stop = G.STOPS[STOP_ROLE].find(s => s.id === STOP_ID);
+    const err  = document.getElementById('codeErr');
+
+    if (val !== stop.sticker_code.toUpperCase()) {
+      err.textContent = '✗ That code doesn\'t match. Look more carefully — the sticker is small.';
+      err.classList.remove('hidden');
+      const inp = document.getElementById('stickerCode');
+      inp.className = 'err';
+      setTimeout(() => { inp.className = ''; }, 1800);
+      return;
+    }
+
+    err.classList.add('hidden');
+    document.getElementById('codeEntry').classList.add('hidden');
+    document.getElementById('fragVal').textContent  = stop.fragment;
+    document.getElementById('fragHint').textContent = stop.hint;
+
+    const nc = document.getElementById('nextClueReveal');
+    if (nc && stop.next_clue) {
+      document.getElementById('nextClueBody').textContent = stop.next_clue;
+      nc.classList.remove('hidden');
+    }
+
+    show('fragReveal');
+  }
+
+  function saveAndContinue() {
+    G.addStop(STOP_ID);
+    const stop = G.STOPS[STOP_ROLE].find(s => s.id === STOP_ID);
+    window.location.href = stop.next_url ? '../' + stop.next_url : '../hunt.html';
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !document.getElementById('codeEntry').classList.contains('hidden'))
+      validateCode();
+  });
+</script>
+</body>
+</html>
