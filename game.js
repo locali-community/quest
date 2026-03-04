@@ -114,28 +114,27 @@ const G = {
 
   // ── Google Forms ────────────────────────────────────────────
   FORMS: {
-    TEAM: {
-      ACTION:    'https://docs.google.com/forms/d/e/1FAIpQLSf0eop7Fl2LL82N6VG9f-4ZCXM5Un3zBir7cyC2FsVnp9OKBA/viewform?usp=pp_url',
-      PLAYER:    'entry.415857790',
-      PARTNER:   'entry.639059933',
-      TEAMNAME:  'entry.419392051',
-      ROLE:      'entry.241583206',
-      TIMESTAMP: 'entry.18026000',
-    },
-    KAKTUS: {
-      ACTION:    'https://docs.google.com/forms/d/e/1FAIpQLSdMqqiP5mVW1kyPWEomCwBF_8a397JpILyRWiFCJZ6AdpuozQ/viewform?usp=pp_url',
-      PLAYER:    'entry.2061720601',
-      TIMESTAMP: 'entry.711780359',
-    },
-    WINNER: {
-      ACTION:    'https://docs.google.com/forms/d/e/1FAIpQLSctHLTgJAx7jO6UmsXsI6hnJJdhVADKxIqwIh8aQPyZ_G7fFA/viewform?usp=pp_url',
-      PLAYER:    'entry.2053224380',
-      PARTNER:   'entry.1249763927',
-      TEAMNAME:  'entry.734626734',
-      TIMESTAMP: 'entry.1927500522',
-    },
+  TEAM: {
+    ACTION:    'https://docs.google.com/forms/d/e/1FAIpQLSf0eop7Fl2LL82N6VG9f-4ZCXM5Un3zBir7cyC2FsVnp9OKBA/formResponse',
+    PLAYER:    'entry.415857790',
+    PARTNER:   'entry.639059933',
+    TEAMNAME:  'entry.419392051',
+    ROLE:      'entry.241583206',
+    TIMESTAMP: 'entry.18026000',
   },
-
+  KAKTUS: {
+    ACTION:    'https://docs.google.com/forms/d/e/1FAIpQLSdMqqiP5mVW1kyPWEomCwBF_8a397JpILyRWiFCJZ6AdpuozQ/formResponse',
+    PLAYER:    'entry.2061720601',
+    TIMESTAMP: 'entry.711780359',
+  },
+  WINNER: {
+    ACTION:    'https://docs.google.com/forms/d/e/1FAIpQLSctHLTgJAx7jO6UmsXsI6hnJJdhVADKxIqwIh8aQPyZ_G7fFA/formResponse',
+    PLAYER:    'entry.2053224380',
+    PARTNER:   'entry.1249763927',
+    TEAMNAME:  'entry.734626734',
+    TIMESTAMP: 'entry.1927500522',
+  },
+},
   // ── localStorage ────────────────────────────────────────────
   K: {
     HANDLE:      'lc_handle',
@@ -183,18 +182,17 @@ const G = {
   },
 
   postForm(key, fields) {
-    const cfg = this.FORMS[key];
-    if (!cfg || cfg.ACTION.includes('FORM_ID')) { console.warn('LOCALI: form '+key+' not configured'); return; }
-    const id = 'gf_'+Date.now();
-    const ifr = document.createElement('iframe');
-    ifr.name = ifr.id = id;
-    ifr.style.cssText = 'display:none;position:absolute;width:0;height:0;border:0;';
-    document.body.appendChild(ifr);
-    const frm = document.createElement('form');
-    frm.method='POST'; frm.action=cfg.ACTION; frm.target=id;
-    Object.entries(fields).forEach(([n,v])=>{ const i=document.createElement('input'); i.type='hidden'; i.name=n; i.value=v; frm.appendChild(i); });
-    document.body.appendChild(frm);
-    frm.submit();
-    setTimeout(()=>{ ifr.remove(); frm.remove(); }, 8000);
-  },
+  const cfg = this.FORMS[key];
+  if (!cfg || cfg.ACTION.includes('FORM_ID')) {
+    console.warn('LOCALI: form ' + key + ' not configured');
+    return;
+  }
+  const body = new URLSearchParams(fields).toString();
+  fetch(cfg.ACTION, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: body,
+  }).catch(err => console.warn('LOCALI: form submit failed', err));
+},
 };
