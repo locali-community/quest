@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LOCALI — Find Your Partner</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="page">
+
+  <div class="topbar f1">
+    <div class="logo">LOC<span>A</span>LI</div>
+    <div class="step-tag">Step 2 of 4</div>
+  </div>
+
+  <div class="progress f2">
+    <div class="dot-step done"></div>
+    <div class="dot-step done"></div>
+    <div class="dot-step active"></div>
+    <div class="dot-step"></div>
+    <div class="dot-step"></div>
+  </div>
+
+  <!-- Gate: no role set -->
+  <div id="gateWarn" class="hidden">
+    <div class="alert alert-err f2">
+      You haven't set your role yet.
+      <a href="role.html" style="color:var(--red);display:block;margin-top:.35rem;">← Go back to Step 1</a>
+    </div>
+  </div>
+
+  <div id="mainContent" class="hidden">
+
+    <div id="rolePillWrap" class="f1"></div>
+
+    <div class="hero f2">
+      <div class="hero-label">Find Your Partner</div>
+      <h1>Go to Instagram</h1>
+    </div>
+
+    <!-- Instagram instruction block -->
+    <div id="igSection">
+
+      <div class="card c-red f2" data-tag="Step 1 — Comment">
+        <h3>Post your role on our Instagram</h3>
+        <p>Go to the LOCALI post and leave this comment exactly so others can find you:</p>
+      </div>
+
+      <div id="commentBox" class="f3" style="border:1px solid var(--line2);background:var(--surf2);padding:1rem 1.1rem;margin-bottom:.8rem;">
+        <div style="font-size:.5rem;letter-spacing:.32em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem;">Copy this comment</div>
+        <div id="commentText" style="font-family:var(--syne);font-size:1.05rem;font-weight:700;color:var(--text);line-height:1.5;"></div>
+      </div>
+
+      <a id="igPostBtn" href="#" target="_blank" class="btn btn-ghost f3" style="margin-bottom:.8rem;">
+        → Open the LOCALI Instagram Post
+      </a>
+
+      <div class="card f3" data-tag="Step 2 — Find & DM">
+        <h3>Find someone with the opposite role</h3>
+        <ul>
+          <li>Browse the comments for someone who posted the <strong>opposite role</strong></li>
+          <li>Send them a DM — introduce yourself</li>
+          <li>Together, decide on a <strong>team name</strong> (anything you like)</li>
+          <li>Then both of you come back here and register your team</li>
+        </ul>
+      </div>
+
+      <div class="divider f4">once you have a partner</div>
+
+      <!-- Partner + team name form -->
+      <div class="card f4" data-tag="Step 3 — Register Your Team">
+        <h3>Enter your team details</h3>
+        <p>Both players must register with the exact same team name. We'll log both entries — that's fine.</p>
+      </div>
+
+      <div class="field f4">
+        <label for="partnerInput">Partner's Instagram Handle</label>
+        <input
+          type="text"
+          id="partnerInput"
+          placeholder="your partner's handle (without @)"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
+          spellcheck="false"
+          oninput="validatePartner()"
+        />
+        <div class="field-hint" id="partnerHint">Enter your partner's real Instagram handle.</div>
+      </div>
+
+      <div class="field f4">
+        <label for="teamnameInput">Team Name</label>
+        <input
+          type="text"
+          id="teamnameInput"
+          placeholder="agree on this with your partner first"
+          autocomplete="off"
+          spellcheck="false"
+          oninput="validateTeamname()"
+        />
+        <div class="field-hint" id="teamnameHint">Min 2 characters. Agree with your partner before submitting.</div>
+      </div>
+
+      <div id="teamErr" class="alert alert-err hidden"></div>
+
+      <button class="btn f5" id="registerBtn" onclick="registerTeam()">
+        Register Team →
+      </button>
+
+    </div><!-- /igSection -->
+
+    <!-- Success screen (shown after registration) -->
+    <div id="successSection" class="hidden">
+
+      <div class="alert alert-ok f1">
+        ✓ Team registered! Both entries logged.
+      </div>
+
+      <div class="card c-gold f2" data-tag="Your Team">
+        <h3 id="successTeamName" style="color:var(--gold);font-size:1.3rem;"></h3>
+        <table style="width:100%;font-size:.75rem;border-collapse:collapse;margin-top:.5rem;">
+          <tr>
+            <td style="color:var(--muted);padding:.3rem 0;width:38%;">Your handle</td>
+            <td id="sHandle" style="color:var(--text);font-family:var(--mono);"></td>
+          </tr>
+          <tr>
+            <td style="color:var(--muted);padding:.3rem 0;">Partner</td>
+            <td id="sPartner" style="color:var(--text);font-family:var(--mono);"></td>
+          </tr>
+          <tr>
+            <td style="color:var(--muted);padding:.3rem 0;">Your role</td>
+            <td id="sRole" style="color:var(--text);"></td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="card f3" data-tag="What's Next">
+        <h3>Now head to Kaktus</h3>
+        <p>Go to <strong>Kaktus Mexican Food</strong> and claim your 20% team discount. Inside the restaurant, find the secret LOCALI code — it's hidden somewhere in the space. Enter it in the next screen to unlock your voucher.</p>
+      </div>
+
+      <a href="https://share.google/J2fruJExUS1heH3Sg" target="_blank" class="map-btn f4">Open Kaktus in Google Maps</a>
+
+      <a href="kaktus.html" class="btn btn-gold f4">
+        I'm at Kaktus → Enter Code
+      </a>
+
+    </div><!-- /successSection -->
+
+  </div><!-- /mainContent -->
+
+  <div class="foot">LOCALI 2.0 · Step 2 · Team Registration</div>
+</div>
+
+<script src="game.js"></script>
+<script>
+  const handle = G.get(G.K.HANDLE);
+  const role   = G.get(G.K.ROLE);
+
+  if (!handle || !role) {
+    document.getElementById('gateWarn').classList.remove('hidden');
+  } else {
+    document.getElementById('mainContent').classList.remove('hidden');
+    init();
+  }
+
+  function init() {
+    // Role pill
+    document.getElementById('rolePillWrap').innerHTML =
+      `<div class="role-pill ${role.toLowerCase()}">${role === 'A' ? '⬡ Player A — The Scout' : '⬡ Player B — The Historian'}</div>`;
+
+    // Comment text
+    const comment = role === 'A'
+      ? '🔵 PLAYER A — The Scout. Looking for a Player B (Historian) to team up! #LOCALIQuest'
+      : '🟡 PLAYER B — The Historian. Looking for a Player A (Scout) to team up! #LOCALIQuest';
+    document.getElementById('commentText').textContent = comment;
+
+    // Instagram post link
+    const igLink = role === 'A' ? G.IG_POST_A : G.IG_POST_B;
+    document.getElementById('igPostBtn').href = igLink;
+
+    // If already registered
+    if (G.get(G.K.PARTNER) && G.get(G.K.TEAMNAME)) {
+      showSuccess();
+    }
+  }
+
+  let partnerValid  = false;
+  let teamnameValid = false;
+
+  function validatePartner() {
+    const raw  = document.getElementById('partnerInput').value;
+    const hint = document.getElementById('partnerHint');
+    const inp  = document.getElementById('partnerInput');
+    const clean = G.cleanHandle(raw);
+
+    if (!raw) { hint.textContent = 'Enter your partner\'s real Instagram handle.'; hint.className = 'field-hint'; inp.className = ''; partnerValid = false; return; }
+    if (clean === handle) { hint.textContent = '✗ You can\'t be your own partner.'; hint.className = 'field-hint err'; inp.className = 'err'; partnerValid = false; return; }
+    if (G.validHandle(raw)) {
+      hint.textContent = '✓ @' + clean; hint.className = 'field-hint ok'; inp.className = 'ok'; partnerValid = true;
+    } else {
+      hint.textContent = '✗ Invalid format.'; hint.className = 'field-hint err'; inp.className = 'err'; partnerValid = false;
+    }
+  }
+
+  function validateTeamname() {
+    const val  = document.getElementById('teamnameInput').value.trim();
+    const hint = document.getElementById('teamnameHint');
+    const inp  = document.getElementById('teamnameInput');
+    if (!val) { hint.textContent = 'Min 2 characters.'; hint.className = 'field-hint'; inp.className = ''; teamnameValid = false; return; }
+    if (val.length >= 2) {
+      hint.textContent = '✓ Team name set'; hint.className = 'field-hint ok'; inp.className = 'ok'; teamnameValid = true;
+    } else {
+      hint.textContent = '✗ Too short.'; hint.className = 'field-hint err'; inp.className = 'err'; teamnameValid = false;
+    }
+  }
+
+  function registerTeam() {
+    const err = document.getElementById('teamErr');
+    err.classList.add('hidden');
+
+    if (!partnerValid) { err.textContent = 'Please enter a valid partner Instagram handle.'; err.classList.remove('hidden'); return; }
+    if (!teamnameValid) { err.textContent = 'Please enter a team name (at least 2 characters).'; err.classList.remove('hidden'); return; }
+
+    const partner  = G.cleanHandle(document.getElementById('partnerInput').value);
+    const teamname = document.getElementById('teamnameInput').value.trim();
+
+    G.set(G.K.PARTNER,  partner);
+    G.set(G.K.TEAMNAME, teamname);
+
+    // Fire Google Form TWICE — once per player perspective
+    const formFields = {
+      [G.FORMS.TEAM.PLAYER]:    handle,
+      [G.FORMS.TEAM.PARTNER]:   partner,
+      [G.FORMS.TEAM.TEAMNAME]:  teamname,
+      [G.FORMS.TEAM.ROLE]:      role,
+      [G.FORMS.TEAM.TIMESTAMP]: G.now(),
+    };
+    G.postForm('TEAM', formFields);
+    // Second entry (partner's perspective) after brief delay
+    setTimeout(() => {
+      G.postForm('TEAM', {
+        [G.FORMS.TEAM.PLAYER]:    partner,
+        [G.FORMS.TEAM.PARTNER]:   handle,
+        [G.FORMS.TEAM.TEAMNAME]:  teamname,
+        [G.FORMS.TEAM.ROLE]:      role === 'A' ? 'B' : 'A',
+        [G.FORMS.TEAM.TIMESTAMP]: G.now(),
+      });
+    }, 2000);
+
+    showSuccess();
+  }
+
+  function showSuccess() {
+    document.getElementById('igSection').classList.add('hidden');
+    document.getElementById('successSection').classList.remove('hidden');
+    const partner  = G.get(G.K.PARTNER);
+    const teamname = G.get(G.K.TEAMNAME);
+    document.getElementById('successTeamName').textContent = '🤝 ' + teamname;
+    document.getElementById('sHandle').textContent  = '@' + handle;
+    document.getElementById('sPartner').textContent = '@' + partner;
+    document.getElementById('sRole').textContent    = role === 'A' ? 'Player A — The Scout' : 'Player B — The Historian';
+  }
+</script>
+</body>
+</html>

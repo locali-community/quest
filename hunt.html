@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LOCALI — The Hunt</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="page">
+  <div class="topbar f1"><div class="logo">LOC<span>A</span>LI</div><div class="step-tag">The Hunt</div></div>
+  <div id="rolePillWrap" class="f1"></div>
+
+  <!-- Not registered -->
+  <div id="gateWarn" class="hidden">
+    <div class="alert alert-err f2">Register first.
+      <a href="index.html" style="color:var(--red);display:block;margin-top:.35rem;">← Start from the beginning</a>
+    </div>
+  </div>
+
+  <!-- Pre-hunt (before Sat 07.03 12:00) -->
+  <div id="preHunt" class="hidden">
+    <div class="hero f2">
+      <div class="hero-label">Not Live Yet</div>
+      <h1>Hunt starts Saturday</h1>
+      <p>On <strong>Saturday 07.03 at 12:00</strong> LOCALI posts on Instagram. That post has your first stop link. Come back then — or tap the button below to watch for the post.</p>
+    </div>
+    <div style="text-align:center;padding:1.75rem 0;border:1px solid var(--line2);background:var(--surf);margin-bottom:.8rem;" class="f3">
+      <div style="font-size:.52rem;letter-spacing:.35em;text-transform:uppercase;color:var(--muted);margin-bottom:.6rem;">Post live in</div>
+      <div id="preCountdown" style="font-family:var(--syne);font-size:2.6rem;font-weight:800;color:var(--red);line-height:1;">--:--:--</div>
+    </div>
+    <a id="igLinkPre" href="#" target="_blank" class="btn btn-ghost f4">Watch @locali_bielefeld on Instagram</a>
+    <a href="waiting.html" class="btn btn-ghost f4">← Back</a>
+  </div>
+
+  <!-- Hunt over -->
+  <div id="huntOver" class="hidden">
+    <div class="hero f2"><div class="hero-label">Hunt Closed</div><h1>The quest has ended</h1>
+      <p>The LOCALI Bielefeld Quest ran 06–11 March 2026. Thank you for taking part.</p>
+    </div>
+  </div>
+
+  <!-- ── ACTIVE HUNT ──────────────────────────────────────── -->
+  <div id="activeHunt" class="hidden">
+
+    <!-- State A: No stops done — go to Instagram for Stop 1 link -->
+    <div id="stateNoStops" class="hidden">
+      <div class="hero f2">
+        <div class="hero-label">Step 1 — Your First Location</div>
+        <h1>Go to Instagram</h1>
+        <p>The LOCALI post is live. Open it and tap the link for your role. It takes you directly to your first stop. Come back here after you've found the sticker and entered the code.</p>
+      </div>
+      <div class="card c-red f3" data-tag="Your Link">
+        <h3 id="igRolePrompt"></h3>
+        <p style="font-size:.75rem;color:var(--muted2);margin-top:.3rem;">The post has a link for Player A and a separate link for Player B. Tap yours only.</p>
+      </div>
+      <a id="igPostBtn" href="#" target="_blank" class="btn f4">Open LOCALI on Instagram →</a>
+    </div>
+
+    <!-- State B: Some stops done, more remaining -->
+    <div id="stateInProgress" class="hidden">
+      <div class="hero f2">
+        <div class="hero-label" id="progressLabel"></div>
+        <h1>Keep going</h1>
+        <p id="progressSub"></p>
+      </div>
+
+      <!-- Collected fragments (shown as anonymous chips — just the encoded values) -->
+      <div class="card f3" data-tag="Your Fragments So Far">
+        <h3>What you've collected</h3>
+        <div id="progressFrags" style="margin-top:.4rem;"></div>
+        <p style="font-size:.65rem;color:var(--muted);margin-top:.6rem;">Write these down. Don't share them until you have all 3.</p>
+      </div>
+
+      <!-- Next stop direction (clue only — no location name or map link) -->
+      <div class="card c-red f3" data-tag="Your Next Stop">
+        <h3>Head to your next location</h3>
+        <p id="nextClueText" style="margin-top:.4rem;font-size:.8rem;line-height:1.9;color:var(--muted2);"></p>
+        <a id="nextStopBtn" href="#" class="btn" style="margin-top:.85rem;font-size:.85rem;">Go to Stop <span id="nextStopNumLabel"></span> →</a>
+      </div>
+    </div>
+
+    <!-- State C: All stops done — two-box decoder -->
+    <div id="stateDecoder" class="hidden">
+
+      <div class="hero f2">
+        <div class="hero-label">All 3 Stops Complete</div>
+        <h1>Decode together</h1>
+        <p>Call your partner. Once you both have all your fragments ready, enter them below. <strong>Both boxes must be exactly right</strong> — the address only appears when both match.</p>
+      </div>
+
+      <!-- Own fragment reminder -->
+      <div class="card f3" data-tag="Your 3 Fragments">
+        <h3>What you collected</h3>
+        <div id="decoderMyFrags" style="margin-top:.4rem;"></div>
+        <p style="font-size:.65rem;color:var(--muted);margin-top:.55rem;">Read these out loud to your partner. Ask them to read theirs back to you.</p>
+      </div>
+
+      <!-- Two entry boxes -->
+      <div class="card c-gold f4" data-tag="Enter All 6 Fragments">
+        <h3>Type the combined fragments</h3>
+        <p style="font-size:.72rem;color:var(--muted2);margin-bottom:.9rem;line-height:1.85;">Enter each player's 3 fragments separated by spaces, exactly as they appeared — every symbol counts. Both boxes must be correct at the same time.</p>
+
+        <div class="field">
+          <label for="boxA">Player A — The Scout (3 fragments)</label>
+          <input type="text" id="boxA"
+            placeholder="fragment-1 fragment-2 fragment-3"
+            autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false"
+            oninput="onBoxInput('A')" />
+          <div class="field-hint" id="hintA">Enter Player A's 3 fragments with spaces between them.</div>
+        </div>
+
+        <div class="field" style="margin-top:.35rem;">
+          <label for="boxB">Player B — The Historian (3 fragments)</label>
+          <input type="text" id="boxB"
+            placeholder="fragment-1 fragment-2 fragment-3"
+            autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false"
+            oninput="onBoxInput('B')" />
+          <div class="field-hint" id="hintB">Enter Player B's 3 fragments with spaces between them.</div>
+        </div>
+
+        <div id="decodeErr" class="alert alert-err hidden" style="margin:.65rem 0 .4rem;"></div>
+        <button class="btn btn-gold" style="margin-top:.3rem;" onclick="attemptDecode()">Decode the Address →</button>
+      </div>
+
+      <!-- Reveal section (hidden until both boxes correct) -->
+      <div id="revealSection" class="hidden">
+        <div class="divider f1">decoding…</div>
+        <div id="revealSteps"></div>
+
+        <!-- Final address + code entry — injected after last step -->
+        <div id="finalBlock" class="hidden">
+          <div class="card c-gold f1" style="margin-top:.8rem;" data-tag="The Destination">
+            <h3 style="color:var(--gold);margin-bottom:.6rem;">You've found the address</h3>
+            <div style="font-family:var(--syne);font-size:1.25rem;font-weight:800;line-height:1.45;letter-spacing:.02em;">
+              Indieflavours Bielefeld<br>
+              <span style="color:var(--gold);">Mauerstraße 52, 33602 Bielefeld</span>
+            </div>
+            <a href="https://maps.google.com/?q=Indieflavours+Bielefeld+Mauerstrase+52" target="_blank" class="map-btn" style="margin-top:.7rem;">Open in Google Maps</a>
+          </div>
+
+          <div class="card f2" data-tag="Final Step — At Indieflavours">
+            <h3>Find the LOCALI sticker at the entrance</h3>
+            <p style="margin-bottom:.75rem;">You're at Mauerstraße 52. Look for the small LOCALI sticker at the entrance. Enter the code written on it.</p>
+            <div class="field" style="margin-bottom:.5rem;">
+              <label for="finalCode">Final Code</label>
+              <input type="text" id="finalCode"
+                placeholder="Code from the sticker at Indieflavours"
+                autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" />
+            </div>
+            <div id="finalErr" class="alert alert-err hidden"></div>
+            <button class="btn btn-gold" onclick="submitFinalCode()">Claim My Prize →</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /stateDecoder -->
+
+    <!-- ── WIN SCREEN ── -->
+    <div id="winSection" class="hidden">
+      <div class="win-hero f1">
+        <span class="win-icon">🏆</span>
+        <div class="win-title">Quest Complete</div>
+        <div class="win-sub">You solved the Bielefeld Sync-Quest</div>
+      </div>
+      <div class="voucher f2">
+        <div class="v-lbl">LOCALI Grand Prize</div>
+        <div class="v-pct" style="font-size:3rem;line-height:1.1;">50% OFF</div>
+        <div class="v-lbl">— €100 if you are the first team —</div>
+        <div class="v-name">🍛 Indieflavours Bielefeld</div>
+        <div class="v-team">Mauerstraße 52, 33602 Bielefeld</div>
+        <div class="v-team" id="winTeam"></div>
+        <div class="v-once">Valid 06–11 March 2026 · Screenshot this now</div>
+      </div>
+      <div class="alert alert-ok f3">Show this screen at Indieflavours. First team today wins €100. Every finishing team gets 50% off.</div>
+      <div class="card f3" data-tag="At Indieflavours">
+        <h3>How to claim</h3>
+        <ul>
+          <li>Show this screen to the waiter or at the counter</li>
+          <li>Staff have been briefed — this is valid</li>
+          <li>Take a screenshot as backup</li>
+          <li>Valid 06–11 March 2026 only</li>
+        </ul>
+      </div>
+      <a href="https://maps.google.com/?q=Indieflavours+Bielefeld+Mauerstrase+52" target="_blank" class="map-btn f4">Open Indieflavours in Google Maps</a>
+    </div>
+
+  </div><!-- /activeHunt -->
+  <div class="foot">LOCALI 2.0 · The Hunt · Bielefeld</div>
+</div>
+
+<script src="game.js"></script>
+<script>
+  const handle   = G.get(G.K.HANDLE);
+  const role     = G.get(G.K.ROLE);
+  const teamname = G.get(G.K.TEAMNAME);
+  const partner  = G.get(G.K.PARTNER);
+
+  if (!handle || !role) {
+    show('gateWarn');
+  } else {
+    document.getElementById('rolePillWrap').innerHTML =
+      `<div class="role-pill ${role.toLowerCase()}">${role==='A'?'⬡ Player A — The Scout':'⬡ Player B — The Historian'}</div>`;
+
+    if (G.get(G.K.WON) === 'yes') {
+      show('activeHunt'); showWin();
+    } else if (G.isHuntOver() && G.getStops().length === 0) {
+      show('huntOver');
+    } else if (G.isHuntLive() || G.getStops().length > 0) {
+      show('activeHunt'); routeState();
+    } else {
+      show('preHunt');
+      document.getElementById('igLinkPre').href = role==='A' ? G.IG_POST_A : G.IG_POST_B;
+      countdown('preCountdown', G.HUNT_START);
+    }
+  }
+
+  function show(id) { document.getElementById(id).classList.remove('hidden'); }
+  function hide(id) { document.getElementById(id).classList.add('hidden'); }
+
+  function routeState() {
+    const done  = G.getStops();
+    const stops = G.stopsForRole(role);
+
+    if (G.allStopsDone()) {
+      show('stateDecoder');
+      renderDecoderFrags();
+      // Pre-fill this player's box
+      const myFrags = G.getFragments().join(' ');
+      if (role === 'A') {
+        document.getElementById('boxA').value = myFrags;
+        setHint('A', 'ok', '✓ Pre-filled from your stops — confirm and have your partner fill theirs.');
+      } else {
+        document.getElementById('boxB').value = myFrags;
+        setHint('B', 'ok', '✓ Pre-filled from your stops — confirm and have your partner fill theirs.');
+      }
+      return;
+    }
+
+    if (done.length === 0) {
+      show('stateNoStops');
+      document.getElementById('igRolePrompt').textContent =
+        role==='A' ? '→ Tap the Player A link in the LOCALI post' : '→ Tap the Player B link in the LOCALI post';
+      document.getElementById('igPostBtn').href = role==='A' ? G.IG_POST_A : G.IG_POST_B;
+    } else {
+      show('stateInProgress');
+      renderProgress(done, stops);
+    }
+  }
+
+  function renderProgress(done, stops) {
+    const doneCount = done.length;
+    const total     = stops.length;
+    const clr       = role==='A' ? 'var(--blue)' : 'var(--gold)';
+
+    document.getElementById('progressLabel').textContent = `Stop ${doneCount} of ${total} Complete`;
+    document.getElementById('progressSub').textContent   =
+      `You have ${doneCount} fragment${doneCount>1?'s':''}. ${total-doneCount} more stop${total-doneCount>1?'s':''} remaining.`;
+
+    // Show collected fragments
+    const el = document.getElementById('progressFrags');
+    done.forEach((id, i) => {
+      const stop = stops.find(s => s.id === id);
+      if (!stop) return;
+      el.innerHTML += `
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:.45rem 0;border-bottom:1px solid var(--line);font-size:.75rem;">
+          <span style="color:var(--muted);">Fragment ${i+1}</span>
+          <strong style="font-family:var(--syne);font-size:1.15rem;letter-spacing:.1em;color:${clr};">${stop.fragment}</strong>
+        </div>`;
+    });
+
+    // Show clue and link to NEXT stop (from last completed stop — never show location name)
+    const lastStop = stops.find(s => s.id === done[done.length-1]);
+    if (lastStop && lastStop.next_clue && lastStop.next_url) {
+      document.getElementById('nextClueText').textContent   = lastStop.next_clue;
+      document.getElementById('nextStopBtn').href           = lastStop.next_url;
+      document.getElementById('nextStopNumLabel').textContent = doneCount + 1;
+      const btn = document.getElementById('nextStopBtn');
+      btn.className = 'btn ' + (role==='A' ? 'btn-blue' : 'btn-gold');
+      btn.style.cssText += 'margin-top:.85rem;font-size:.85rem;';
+    }
+  }
+
+  function renderDecoderFrags() {
+    const frags = G.getFragments();
+    const clr   = role==='A' ? 'var(--blue)' : 'var(--gold)';
+    const el    = document.getElementById('decoderMyFrags');
+    frags.forEach((f, i) => {
+      el.innerHTML += `
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:.45rem 0;border-bottom:1px solid var(--line);font-size:.75rem;">
+          <span style="color:var(--muted);">Fragment ${i+1}</span>
+          <strong style="font-family:var(--syne);font-size:1.2rem;letter-spacing:.12em;color:${clr};">${f}</strong>
+        </div>`;
+    });
+  }
+
+  function setHint(box, state, msg) {
+    const el = document.getElementById('hint'+box);
+    el.textContent = msg;
+    el.className   = 'field-hint' + (state ? ' '+state : '');
+    document.getElementById('box'+box).className = state==='err'?'err':state==='ok'?'ok':'';
+  }
+
+  function onBoxInput(box) {
+    setHint(box, '', 'Enter Player '+box+'\'s 3 fragments with spaces between them.');
+    document.getElementById('decodeErr').classList.add('hidden');
+  }
+
+  function attemptDecode() {
+    const rawA = document.getElementById('boxA').value;
+    const rawB = document.getElementById('boxB').value;
+    const err  = document.getElementById('decodeErr');
+
+    const normA = G.norm(rawA);
+    const normB = G.norm(rawB);
+    const okA   = normA === G.DECODER.ANSWER_A;
+    const okB   = normB === G.DECODER.ANSWER_B;
+
+    setHint('A', okA ? 'ok' : 'err', okA ? '✓ Correct' : '✗ Doesn\'t match — check every character.');
+    setHint('B', okB ? 'ok' : 'err', okB ? '✓ Correct' : '✗ Doesn\'t match — check every character.');
+
+    if (!okA || !okB) {
+      err.textContent = !okA && !okB
+        ? '✗ Both boxes have errors. Copy each fragment exactly — symbols and case matter.'
+        : !okA ? '✗ Player A\'s fragments don\'t match. Check for typos.'
+               : '✗ Player B\'s fragments don\'t match. Check for typos.';
+      err.classList.remove('hidden');
+      return;
+    }
+
+    // Both correct — hide the form, start timed reveal
+    err.classList.add('hidden');
+    document.getElementById('stateDecoder').querySelector('.card.c-gold').classList.add('hidden');
+    show('revealSection');
+
+    const stepsEl = document.getElementById('revealSteps');
+    G.DECODER.STEPS.forEach((step, i) => {
+      setTimeout(() => {
+        const d = document.createElement('div');
+        d.className = 'card f1';
+        d.style.cssText = 'margin-bottom:.7rem;border-left:3px solid var(--red);opacity:0;transition:opacity .6s ease;';
+        d.innerHTML = `
+          <div style="font-size:.49rem;letter-spacing:.32em;text-transform:uppercase;color:var(--red);margin-bottom:.3rem;">${step.label}</div>
+          <div style="font-size:.82rem;line-height:1.9;color:var(--muted2);">${step.html}</div>`;
+        stepsEl.appendChild(d);
+        requestAnimationFrame(() => requestAnimationFrame(() => { d.style.opacity = '1'; }));
+        d.scrollIntoView({ behavior: 'smooth', block: 'end' });
+
+        // After last step, show final address + code entry
+        if (i === G.DECODER.STEPS.length - 1) {
+          setTimeout(() => {
+            show('finalBlock');
+            document.getElementById('finalBlock').scrollIntoView({ behavior: 'smooth' });
+          }, 900);
+        }
+      }, step.delay);
+    });
+  }
+
+  function submitFinalCode() {
+    const val = document.getElementById('finalCode').value.trim().toUpperCase().replace(/\s/g,'');
+    const err = document.getElementById('finalErr');
+    if (val !== G.INDIE_CODE.toUpperCase()) {
+      err.textContent = '✗ Not the right code. Find the LOCALI sticker at the Indieflavours entrance.';
+      err.classList.remove('hidden');
+      document.getElementById('finalCode').className = 'err';
+      setTimeout(() => { document.getElementById('finalCode').className = ''; }, 1800);
+      return;
+    }
+    err.classList.add('hidden');
+    G.set(G.K.WON, 'yes');
+    G.postForm('WINNER', {
+      [G.FORMS.WINNER.PLAYER]:    handle,
+      [G.FORMS.WINNER.PARTNER]:   partner || '',
+      [G.FORMS.WINNER.TEAMNAME]:  teamname || '',
+      [G.FORMS.WINNER.TIMESTAMP]: G.now(),
+    });
+    hide('stateDecoder');
+    showWin();
+  }
+
+  function showWin() {
+    show('winSection');
+    document.getElementById('winTeam').textContent =
+      (teamname ? 'Team: '+teamname+' · ' : '') + '@'+handle;
+  }
+
+  function countdown(elId, target) {
+    (function tick() {
+      const diff = target - new Date();
+      if (diff <= 0) { location.reload(); return; }
+      const d=Math.floor(diff/86400000), h=Math.floor((diff%86400000)/3600000),
+            m=Math.floor((diff%3600000)/60000), s=Math.floor((diff%60000)/1000);
+      document.getElementById(elId).textContent = d>0
+        ? `${d}d ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`
+        : `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+      setTimeout(tick, 1000);
+    })();
+  }
+</script>
+</body>
+</html>

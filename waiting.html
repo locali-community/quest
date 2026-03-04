@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LOCALI — You're In</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="page">
+  <div class="topbar f1"><div class="logo">LOC<span>A</span>LI</div><div class="step-tag">You're Registered</div></div>
+  <div class="progress f2">
+    <div class="dot-step done"></div><div class="dot-step done"></div>
+    <div class="dot-step done"></div><div class="dot-step done"></div>
+    <div class="dot-step active"></div>
+  </div>
+
+  <div id="rolePillWrap" class="f1"></div>
+
+  <div class="f2" style="text-align:center;padding:2rem 0 1.5rem;border:1px solid var(--line2);background:var(--surf);margin-bottom:.8rem;">
+    <div id="cdLabel" style="font-size:.52rem;letter-spacing:.35em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem;">Instagram post goes live in</div>
+    <div id="countdown" style="font-family:var(--syne);font-size:3rem;font-weight:800;color:var(--red);line-height:1;letter-spacing:-0.03em;">--:--:--</div>
+    <div style="font-size:.6rem;letter-spacing:.2em;color:var(--muted);margin-top:.65rem;">Saturday · 07.03.2026 · 12:00</div>
+  </div>
+
+  <div class="card c-red f3" data-tag="What Happens on Saturday">
+    <h3>LOCALI posts on Instagram — not a story</h3>
+    <p>On <strong>Saturday 07.03 at 12:00</strong>, LOCALI publishes a post (it stays live all week — not a 24-hour story). That post contains <strong>two links</strong>:</p>
+    <ul style="margin-top:.5rem;">
+      <li>One link for <strong>Player A — The Scout</strong></li>
+      <li>One link for <strong>Player B — The Historian</strong></li>
+    </ul>
+    <p style="margin-top:.6rem;">Tap <strong>your</strong> role's link. It takes you to your first stop. <strong>Do not tap your partner's link</strong> — their clues are different from yours.</p>
+  </div>
+
+  <div class="card f3" data-tag="How Stops Work">
+    <h3>Physical sticker codes</h3>
+    <ul>
+      <li>Arrive at your location</li>
+      <li>Find the small <strong>LOCALI sticker</strong> — it has a short code written on it</li>
+      <li>Enter the code on your screen — it must match exactly</li>
+      <li>Correct code reveals your <strong>encoded fragment</strong> and a clue to the next location</li>
+      <li>After 3 stops: call your partner and enter all 6 fragments together to decode the final address</li>
+    </ul>
+  </div>
+
+  <div class="card c-gold f4" data-tag="Meanwhile — Kaktus">
+    <h3>Visit Kaktus any time you like</h3>
+    <p>No need to wait for Saturday. Visit <strong>Kaktus Mexican Food</strong>, find the code sticker inside, and claim your personal 20% discount. No team or partner needed. No expiry.</p>
+    <a href="kaktus.html" class="btn btn-ghost" style="margin-top:.75rem;display:inline-block;width:auto;padding:.45rem 1rem;font-size:.75rem;">→ Kaktus code entry</a>
+  </div>
+
+  <div class="card f4" data-tag="Your Registration">
+    <h3 id="teamName" style="color:var(--gold);"></h3>
+    <table style="width:100%;font-size:.75rem;border-collapse:collapse;margin-top:.4rem;">
+      <tr><td style="color:var(--muted);padding:.3rem 0;width:42%;">Your handle</td><td id="sHandle" style="font-family:var(--mono);"></td></tr>
+      <tr><td style="color:var(--muted);padding:.3rem 0;">Partner</td><td id="sPartner" style="font-family:var(--mono);"></td></tr>
+      <tr><td style="color:var(--muted);padding:.3rem 0;">Your role</td><td id="sRole"></td></tr>
+      <tr><td style="color:var(--muted);padding:.3rem 0;">Kaktus</td><td id="sKaktus"></td></tr>
+    </table>
+  </div>
+
+  <a id="igBtn" href="#" target="_blank" class="btn btn-ghost f5">Follow @locali_bielefeld on Instagram</a>
+  <div class="alert alert-info f5" style="margin-top:.25rem;">💾 Your data is saved on this device. Return here any time.</div>
+  <div class="foot f6">LOCALI 2.0 · Bielefeld · 06–11 March 2026</div>
+</div>
+
+<script src="game.js"></script>
+<script>
+  const handle = G.get(G.K.HANDLE), role = G.get(G.K.ROLE);
+  const partner = G.get(G.K.PARTNER), teamname = G.get(G.K.TEAMNAME);
+
+  if (role) document.getElementById('rolePillWrap').innerHTML =
+    `<div class="role-pill ${role.toLowerCase()}">${role==='A'?'⬡ Player A — The Scout':'⬡ Player B — The Historian'}</div>`;
+
+  document.getElementById('teamName').textContent  = teamname ? '🤝 '+teamname : 'No team registered yet';
+  document.getElementById('sHandle').textContent   = handle  ? '@'+handle  : '—';
+  document.getElementById('sPartner').textContent  = partner ? '@'+partner : '—';
+  document.getElementById('sRole').textContent     = role==='A'?'Player A — The Scout':role==='B'?'Player B — The Historian':'—';
+  const kd = G.get(G.K.KAKTUS_DONE)==='yes';
+  document.getElementById('sKaktus').textContent   = kd ? '✓ Claimed' : 'Not yet — visit Kaktus any time';
+  document.getElementById('sKaktus').style.color   = kd ? 'var(--green)' : 'var(--muted)';
+  document.getElementById('igBtn').href            = G.IG_PROFILE;
+
+  (function tick() {
+    const now = new Date();
+    if (G.isHuntLive()) {
+      document.getElementById('countdown').textContent = 'LIVE NOW';
+      document.getElementById('countdown').style.color = 'var(--green)';
+      document.getElementById('cdLabel').textContent = 'Hunt is live — check Instagram!';
+      return;
+    }
+    if (G.isHuntOver()) { document.getElementById('countdown').textContent = 'Hunt ended'; return; }
+    const diff = G.HUNT_START - now;
+    const d=Math.floor(diff/86400000), h=Math.floor((diff%86400000)/3600000),
+          m=Math.floor((diff%3600000)/60000), s=Math.floor((diff%60000)/1000);
+    document.getElementById('countdown').textContent = d>0
+      ? `${d}d ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`
+      : `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    setTimeout(tick, 1000);
+  })();
+</script>
+</body>
+</html>

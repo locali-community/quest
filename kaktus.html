@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LOCALI — Kaktus 20% Off</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="page">
+
+  <div class="topbar f1">
+    <div class="logo">LOC<span>A</span>LI</div>
+    <div class="step-tag">Kaktus Reward</div>
+  </div>
+
+  <div class="progress f2">
+    <div class="dot-step done"></div>
+    <div class="dot-step done"></div>
+    <div class="dot-step done"></div>
+    <div class="dot-step active"></div>
+    <div class="dot-step"></div>
+  </div>
+
+  <!-- No handle gate -->
+  <div id="gateWarn" class="hidden">
+    <div class="alert alert-err f2">
+      Set up your role first.
+      <a href="role.html" style="color:var(--red);display:block;margin-top:.35rem;">← Go to Step 1</a>
+    </div>
+  </div>
+
+  <div id="mainContent" class="hidden">
+
+    <div id="rolePillWrap" class="f1"></div>
+
+    <!-- Code entry -->
+    <div id="codeSection">
+
+      <div class="hero f2">
+        <div class="hero-label">Kaktus Mexican Food</div>
+        <h1>Find the hidden code</h1>
+        <p>You're at Kaktus. Somewhere inside the restaurant — on the menu, a sticker, the wall — there is a printed LOCALI code. Look for it. Enter it below to unlock your personal 20% discount.</p>
+      </div>
+
+      <div class="alert alert-info f3">
+        This reward is <strong>yours alone</strong> — no partner or team needed. You can use it any time, even after the hunt ends.
+      </div>
+
+      <a href="https://share.google/J2fruJExUS1heH3Sg" target="_blank" class="map-btn f3">Open Kaktus in Google Maps</a>
+
+      <div class="field f3">
+        <label for="codeInput">Kaktus Secret Code</label>
+        <input
+          type="text"
+          id="codeInput"
+          placeholder="The code you found inside Kaktus"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="characters"
+          spellcheck="false"
+        />
+        <div class="field-hint">Not case-sensitive. Enter exactly what you see on the sticker.</div>
+      </div>
+
+      <div id="codeErr" class="alert alert-err hidden"></div>
+      <button class="btn f4" onclick="unlockVoucher()">Unlock My 20% Voucher →</button>
+
+      <div class="alert alert-info f5">
+        💡 The code is physically inside the restaurant — you need to be there to find it.
+      </div>
+
+    </div>
+
+    <!-- Voucher -->
+    <div id="voucherSection" class="hidden">
+
+      <div class="divider f1">unlocked ✓</div>
+
+      <div class="voucher f1">
+        <div class="v-lbl">LOCALI Personal Reward</div>
+        <div class="v-pct">20<span style="font-size:2rem">%</span></div>
+        <div class="v-lbl">Off Your Entire Order</div>
+        <div class="v-name">🌮 Kaktus Mexican Food</div>
+        <div class="v-team" id="vHandle"></div>
+        <div class="v-once">Screenshot this — show it to the waiter or at the cash</div>
+      </div>
+
+      <div id="redeemBlock" class="f2">
+        <div class="alert alert-info">
+          Show this screen at the cash or to your waiter. Take a screenshot first. Tap below once your discount has been applied.
+        </div>
+        <button class="btn btn-gold" onclick="markRedeemed()">✓ Mark as Redeemed</button>
+      </div>
+      <div id="redeemedMsg" class="alert alert-ok hidden f2">✅ Voucher redeemed. Enjoy your meal! 🌮</div>
+
+      <div class="spacer"></div>
+
+      <div class="card c-red f3" data-tag="Meanwhile">
+        <h3>The hunt is coming</h3>
+        <p>On <strong>Friday 06.03 at 12:00</strong>, LOCALI will post on Instagram. That post contains your hunt link. Tap the link for your role and begin the city hunt — 3 locations, encoded fragments, and a secret restaurant to decode.</p>
+      </div>
+
+      <a href="waiting.html" class="btn btn-ghost f4">← Back to waiting screen</a>
+
+    </div>
+
+  </div>
+
+  <div class="foot">LOCALI 2.0 · Kaktus Reward</div>
+</div>
+
+<script src="game.js"></script>
+<script>
+  const handle = G.get(G.K.HANDLE);
+  const role   = G.get(G.K.ROLE);
+
+  if (!handle || !role) {
+    document.getElementById('gateWarn').classList.remove('hidden');
+  } else {
+    document.getElementById('mainContent').classList.remove('hidden');
+    document.getElementById('rolePillWrap').innerHTML =
+      `<div class="role-pill ${role.toLowerCase()}">${role === 'A' ? '⬡ Player A — The Scout' : '⬡ Player B — The Historian'}</div>`;
+
+    if (G.get(G.K.KAKTUS_DONE) === 'yes') showVoucher();
+  }
+
+  function unlockVoucher() {
+    const val = document.getElementById('codeInput').value.trim().toUpperCase().replace(/\s/g,'');
+    const err = document.getElementById('codeErr');
+    if (val !== G.KAKTUS_CODE.toUpperCase()) {
+      err.textContent = '✗ That\'s not the code. Keep looking inside Kaktus.';
+      err.classList.remove('hidden');
+      const inp = document.getElementById('codeInput');
+      inp.className = 'err';
+      setTimeout(() => { inp.className = ''; }, 1800);
+      return;
+    }
+    err.classList.add('hidden');
+    G.set(G.K.KAKTUS_DONE, 'yes');
+
+    // Fire Form 2 — individual player, no team data needed
+    G.postForm('KAKTUS', {
+      [G.FORMS.KAKTUS.PLAYER]:    handle,
+      [G.FORMS.KAKTUS.TIMESTAMP]: G.now(),
+    });
+
+    showVoucher();
+  }
+
+  function showVoucher() {
+    document.getElementById('codeSection').classList.add('hidden');
+    document.getElementById('voucherSection').classList.remove('hidden');
+    document.getElementById('vHandle').textContent = '@' + handle;
+    if (localStorage.getItem('lc_kaktus_redeemed') === 'yes') {
+      document.getElementById('redeemBlock').classList.add('hidden');
+      document.getElementById('redeemedMsg').classList.remove('hidden');
+    }
+  }
+
+  function markRedeemed() {
+    if (!confirm('Has your discount been applied? Tap OK to mark as used.')) return;
+    localStorage.setItem('lc_kaktus_redeemed', 'yes');
+    document.getElementById('redeemBlock').classList.add('hidden');
+    document.getElementById('redeemedMsg').classList.remove('hidden');
+  }
+
+  document.getElementById('codeInput') && document.getElementById('codeInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') unlockVoucher();
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LOCALI — Choose Your Role</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="page">
+
+  <div class="topbar f1">
+    <div class="logo">LOC<span>A</span>LI</div>
+    <div class="step-tag">Step 1 of 4</div>
+  </div>
+
+  <div class="progress f2">
+    <div class="dot-step done"></div>
+    <div class="dot-step active"></div>
+    <div class="dot-step"></div>
+    <div class="dot-step"></div>
+    <div class="dot-step"></div>
+  </div>
+
+  <div class="hero f2">
+    <div class="hero-label">Your Identity</div>
+    <h1>Choose your role</h1>
+    <p>Your role decides which locations you visit and which fragments you collect. You and your partner must have opposite roles — the puzzle only works that way.</p>
+  </div>
+
+  <!-- Role picker -->
+  <div class="role-grid f3">
+    <div class="role-card" id="cardA" onclick="selectRole('A')">
+      <div class="role-letter">A</div>
+      <h4>The Scout</h4>
+      <p>Physical observation. You count, measure, and look.</p>
+    </div>
+    <div class="role-card" id="cardB" onclick="selectRole('B')">
+      <div class="role-letter">B</div>
+      <h4>The Historian</h4>
+      <p>Names, places, and meaning. You read and interpret.</p>
+    </div>
+  </div>
+  <div id="roleErr" class="alert alert-err hidden f3">Please choose a role before continuing.</div>
+
+  <!-- Instagram handle -->
+  <div class="card f4" data-tag="Your Identity">
+    <h3>Your Instagram handle</h3>
+    <p>This is how partners find you and how we verify your team. Enter your real handle — we check the format.</p>
+  </div>
+
+  <div class="field f4">
+    <label for="handleInput">Instagram Handle</label>
+    <input
+      type="text"
+      id="handleInput"
+      placeholder="e.g. your_handle (without @)"
+      autocomplete="off"
+      autocorrect="off"
+      autocapitalize="off"
+      spellcheck="false"
+      oninput="validateHandle()"
+    />
+    <div class="field-hint" id="handleHint">Only letters, numbers, dots and underscores. Min 2 characters.</div>
+  </div>
+
+  <!-- Review block (shown before confirm) -->
+  <div id="reviewBlock" class="card c-blue f4 hidden" data-tag="Confirm Your Choices">
+    <h3>Before you continue</h3>
+    <table style="width:100%;font-size:.75rem;border-collapse:collapse;margin-top:.35rem;">
+      <tr>
+        <td style="color:var(--muted);padding:.3rem 0;width:40%;">Role</td>
+        <td id="reviewRole" style="color:var(--text);font-weight:600;"></td>
+      </tr>
+      <tr>
+        <td style="color:var(--muted);padding:.3rem 0;">Handle</td>
+        <td id="reviewHandle" style="color:var(--text);font-family:var(--mono);"></td>
+      </tr>
+    </table>
+    <button class="btn btn-ghost" style="margin-top:.85rem;width:auto;padding:.45rem .9rem;font-size:.68rem;" onclick="resetChoices()">
+      ✕ Change my choices
+    </button>
+  </div>
+
+  <div id="formErr" class="alert alert-err hidden"></div>
+
+  <button class="btn f5" id="continueBtn" onclick="proceed()">
+    Confirm & Continue →
+  </button>
+
+  <div class="foot f6">LOCALI 2.0 · Step 1 · Role & Identity</div>
+</div>
+
+<script src="game.js"></script>
+<script>
+  let selectedRole = null;
+  let handleValid  = false;
+
+  // Restore if navigating back
+  const savedRole   = G.get(G.K.ROLE);
+  const savedHandle = G.get(G.K.HANDLE);
+  if (savedRole)   { selectRole(savedRole, true); }
+  if (savedHandle) { document.getElementById('handleInput').value = savedHandle; validateHandle(); }
+
+  function selectRole(r, silent) {
+    selectedRole = r;
+    document.getElementById('cardA').className = 'role-card' + (r === 'A' ? ' selected-a' : '');
+    document.getElementById('cardB').className = 'role-card' + (r === 'B' ? ' selected-b' : '');
+    document.getElementById('roleErr').classList.add('hidden');
+    if (!silent) updateReview();
+  }
+
+  function validateHandle() {
+    const raw  = document.getElementById('handleInput').value;
+    const hint = document.getElementById('handleHint');
+    const inp  = document.getElementById('handleInput');
+
+    if (raw.length === 0) {
+      hint.textContent = 'Only letters, numbers, dots and underscores. Min 2 characters.';
+      hint.className   = 'field-hint';
+      inp.className    = '';
+      handleValid      = false;
+      return;
+    }
+
+    const clean = G.cleanHandle(raw);
+    if (G.validHandle(raw)) {
+      hint.textContent = '✓ @' + clean + ' looks valid';
+      hint.className   = 'field-hint ok';
+      inp.className    = 'ok';
+      handleValid      = true;
+    } else {
+      hint.textContent = '✗ Invalid format. Use letters, numbers, dots, underscores only.';
+      hint.className   = 'field-hint err';
+      inp.className    = 'err';
+      handleValid      = false;
+    }
+    updateReview();
+  }
+
+  function updateReview() {
+    if (!selectedRole || !handleValid) return;
+    const handle = G.cleanHandle(document.getElementById('handleInput').value);
+    document.getElementById('reviewRole').textContent   = selectedRole === 'A' ? 'Player A — The Scout' : 'Player B — The Historian';
+    document.getElementById('reviewHandle').textContent = '@' + handle;
+    document.getElementById('reviewBlock').classList.remove('hidden');
+  }
+
+  function resetChoices() {
+    selectedRole = null;
+    handleValid  = false;
+    document.getElementById('cardA').className    = 'role-card';
+    document.getElementById('cardB').className    = 'role-card';
+    document.getElementById('handleInput').value  = '';
+    document.getElementById('handleHint').textContent = 'Only letters, numbers, dots and underscores. Min 2 characters.';
+    document.getElementById('handleHint').className   = 'field-hint';
+    document.getElementById('handleInput').className  = '';
+    document.getElementById('reviewBlock').classList.add('hidden');
+    document.getElementById('formErr').classList.add('hidden');
+  }
+
+  function proceed() {
+    const err = document.getElementById('formErr');
+    err.classList.add('hidden');
+
+    if (!selectedRole) {
+      document.getElementById('roleErr').classList.remove('hidden');
+      document.getElementById('roleErr').scrollIntoView({behavior:'smooth'});
+      return;
+    }
+    if (!handleValid) {
+      err.textContent = 'Please enter a valid Instagram handle.';
+      err.classList.remove('hidden');
+      return;
+    }
+
+    const handle = G.cleanHandle(document.getElementById('handleInput').value);
+    G.set(G.K.ROLE,   selectedRole);
+    G.set(G.K.HANDLE, handle);
+    window.location.href = 'team.html';
+  }
+
+  document.getElementById('handleInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') proceed();
+  });
+</script>
+</body>
+</html>
