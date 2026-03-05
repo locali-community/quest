@@ -1,32 +1,22 @@
 'use strict';
 
 const G = {
-  // Registration opens Fri 06.03. Instagram post (Stop 1 links) goes live Sat 07.03 12:00.
   REGISTER_START: new Date('2026-03-06T00:00:00'),
   HUNT_START:     new Date('2026-03-07T12:00:00'),
   HUNT_END:       new Date('2026-03-11T23:59:00'),
 
-  IG_POST_A:  'https://www.instagram.com/locali_studentlife?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==', // replace with real post URL
-  IG_POST_B:  'https://www.instagram.com/locali_studentlife?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==', // replace with real post URL
+  IG_POST_A:  'https://www.instagram.com/locali_studentlife?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==',
+  IG_POST_B:  'https://www.instagram.com/locali_studentlife?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==',
   IG_PROFILE: 'https://www.instagram.com/locali_studentlife?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==',
 
-  KAKTUS_CODE: 'KAKTUS52',   // sticker inside Kaktus — individual, no expiry
-  INDIE_CODE:  'INDIE2026',  // sticker at Indieflavours entrance — 06–11.03 only
+  KAKTUS_CODE: 'KAKTUS52',
+  INDIE_CODE:  'INDIE2026',
 
   FINAL_NAME:    'Indieflavours Bielefeld',
   FINAL_ADDRESS: 'Mauerstraße 52, 33602 Bielefeld',
   FINAL_MAP:     'https://maps.google.com/?q=Indieflavours+Bielefeld+Mauerstrase+52',
   KAKTUS_MAP:    'https://share.google/J2fruJExUS1heH3Sg',
 
-  // ── STOPS ──────────────────────────────────────────────────
-  // Each stop:
-  //   sticker_code  — the text printed on the physical LOCALI sticker at that location
-  //   fragment      — encoded piece, revealed ONLY after correct sticker code
-  //   next_clue     — shown after code validated; guides to next stop (null = last stop)
-  //   next_url      — relative path to next stop page (null = last stop)
-  // Location names are NEVER shown on the hunt overview page.
-  // Stop 1 URL comes from the Instagram post. Stop 2 and 3 URLs are
-  // revealed only after the previous stop's sticker code is validated.
   STOPS: {
     A: [
       {
@@ -88,16 +78,9 @@ const G = {
     ],
   },
 
-  // ── DECODER ────────────────────────────────────────────────
-  // Player A types all 3 of their fragments (space-separated).
-  // Player B types all 3 of theirs.
-  // Both boxes must match simultaneously before any reveal happens.
-  // Correct answers (normalised: uppercase, spaces/whitespace stripped):
   DECODER: {
-    ANSWER_A: 'N52°01E008°31#4A-F2',   // A's 3 fragments concatenated, normalised
-    ANSWER_B:  'BF-3360MW-52-XIDF-26', // B's 3 fragments concatenated, normalised
-
-    // These steps reveal one by one (with delays) only after both boxes correct
+    ANSWER_A: 'N52°01E008°31#4A-F2',
+    ANSWER_B:  'BF-3360MW-52-XIDF-26',
     STEPS: [
       { delay:    0, label: 'The restaurant name',
         html: '#4A-F2 + IDF-26 → initials <strong>IDF</strong> = <strong>InDieFlavours</strong>. City code BF = <strong>Bielefeld</strong>.' },
@@ -112,30 +95,29 @@ const G = {
     ],
   },
 
-  // ── Google Forms ────────────────────────────────────────────
   FORMS: {
-  TEAM: {
-    ACTION:    'https://docs.google.com/forms/d/e/1FAIpQLSf0eop7Fl2LL82N6VG9f-4ZCXM5Un3zBir7cyC2FsVnp9OKBA/formResponse',
-    PLAYER:    'entry.415857790',
-    PARTNER:   'entry.639059933',
-    TEAMNAME:  'entry.419392051',
-    ROLE:      'entry.241583206',
-    TIMESTAMP: 'entry.18026000',
+    TEAM: {
+      ACTION:    'https://docs.google.com/forms/d/e/1FAIpQLSf0eop7Fl2LL82N6VG9f-4ZCXM5Un3zBir7cyC2FsVnp9OKBA/formResponse',
+      PLAYER:    'entry.415857790',
+      PARTNER:   'entry.639059933',
+      TEAMNAME:  'entry.419392051',
+      ROLE:      'entry.241583206',
+      TIMESTAMP: 'entry.18026000',
+    },
+    KAKTUS: {
+      ACTION:    'https://docs.google.com/forms/d/e/1FAIpQLSdMqqiP5mVW1kyPWEomCwBF_8a397JpILyRWiFCJZ6AdpuozQ/formResponse',
+      PLAYER:    'entry.2061720601',
+      TIMESTAMP: 'entry.711780359',
+    },
+    WINNER: {
+      ACTION:    'https://docs.google.com/forms/d/e/1FAIpQLSctHLTgJAx7jO6UmsXsI6hnJJdhVADKxIqwIh8aQPyZ_G7fFA/formResponse',
+      PLAYER:    'entry.2053224380',
+      PARTNER:   'entry.1249763927',
+      TEAMNAME:  'entry.734626734',
+      TIMESTAMP: 'entry.1927500522',
+    },
   },
-  KAKTUS: {
-    ACTION:    'https://docs.google.com/forms/d/e/1FAIpQLSdMqqiP5mVW1kyPWEomCwBF_8a397JpILyRWiFCJZ6AdpuozQ/formResponse',
-    PLAYER:    'entry.2061720601',
-    TIMESTAMP: 'entry.711780359',
-  },
-  WINNER: {
-    ACTION:    'https://docs.google.com/forms/d/e/1FAIpQLSctHLTgJAx7jO6UmsXsI6hnJJdhVADKxIqwIh8aQPyZ_G7fFA/formResponse',
-    PLAYER:    'entry.2053224380',
-    PARTNER:   'entry.1249763927',
-    TEAMNAME:  'entry.734626734',
-    TIMESTAMP: 'entry.1927500522',
-  },
-},
-  // ── localStorage ────────────────────────────────────────────
+
   K: {
     HANDLE:      'lc_handle',
     ROLE:        'lc_role',
@@ -174,25 +156,24 @@ const G = {
   validHandle(r) { const h = r.replace(/^@/,'').trim(); return h.length>=2 && /^[a-zA-Z0-9._]+$/.test(h); },
   cleanHandle(r) { return r.replace(/^@/,'').trim().toLowerCase(); },
 
-  // Normalise decoder input: uppercase, strip spaces and non-essential chars
   norm(s) { return s.toUpperCase().replace(/\s+/g,'').replace(/[^A-Z0-9°#\-]/g,''); },
 
   now() {
     return new Date().toLocaleString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'});
   },
 
+  // Single fetch-based form POST — fires once per call, no double submissions
   postForm(key, fields) {
-  const cfg = this.FORMS[key];
-  if (!cfg || cfg.ACTION.includes('FORM_ID')) {
-    console.warn('LOCALI: form ' + key + ' not configured');
-    return;
-  }
-  const body = new URLSearchParams(fields).toString();
-  fetch(cfg.ACTION, {
-    method: 'POST',
-    mode: 'no-cors',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: body,
-  }).catch(err => console.warn('LOCALI: form submit failed', err));
-},
+    const cfg = this.FORMS[key];
+    if (!cfg || cfg.ACTION.includes('FORM_ID')) {
+      console.warn('LOCALI: form ' + key + ' not configured');
+      return;
+    }
+    fetch(cfg.ACTION, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(fields).toString(),
+    }).catch(err => console.warn('LOCALI: form submit failed', err));
+  },
 };
