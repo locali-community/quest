@@ -229,25 +229,14 @@
     G.set(G.K.PARTNER,  partner);
     G.set(G.K.TEAMNAME, teamname);
 
-    // Fire Google Form TWICE — once per player perspective
-    const formFields = {
+    // Fire Google Form once — partner fires their own entry from their own device
+    G.postForm('TEAM', {
       [G.FORMS.TEAM.PLAYER]:    handle,
       [G.FORMS.TEAM.PARTNER]:   partner,
       [G.FORMS.TEAM.TEAMNAME]:  teamname,
       [G.FORMS.TEAM.ROLE]:      role,
       [G.FORMS.TEAM.TIMESTAMP]: G.now(),
-    };
-    G.postForm('TEAM', formFields);
-    // Second entry (partner's perspective) after brief delay
-    setTimeout(() => {
-      G.postForm('TEAM', {
-        [G.FORMS.TEAM.PLAYER]:    partner,
-        [G.FORMS.TEAM.PARTNER]:   handle,
-        [G.FORMS.TEAM.TEAMNAME]:  teamname,
-        [G.FORMS.TEAM.ROLE]:      role === 'A' ? 'B' : 'A',
-        [G.FORMS.TEAM.TIMESTAMP]: G.now(),
-      });
-    }, 2000);
+    });
 
     showSuccess();
   }
