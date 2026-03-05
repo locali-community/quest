@@ -426,7 +426,7 @@
       .then(data => {
         const state = data.record;
 
-        if (state.winner_locked) {
+        if (state.winner_locked === true || state.winner_locked === 'true') {
           // Winner already exists — this team gets 50% off
           G.set(G.K.WON, 'finisher');
           G.set('lc_winner_team', state.team || 'another team');
