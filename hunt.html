@@ -156,32 +156,66 @@
 
     </div><!-- /stateDecoder -->
 
-    <!-- ── WIN SCREEN ── -->
+    <!-- Checking winner status (shown briefly while API call runs) -->
+    <div id="checkingWinner" class="hidden">
+      <div style="text-align:center;padding:3rem 0;">
+        <div style="font-size:2rem;animation:bob .85s ease infinite alternate;">⏳</div>
+        <div style="font-family:var(--syne);font-size:1.1rem;font-weight:700;margin-top:1rem;color:var(--muted2);">Checking winner status…</div>
+        <div style="font-size:.65rem;color:var(--muted);margin-top:.4rem;">Just a moment</div>
+      </div>
+    </div>
+
+    <!-- ── WIN SCREEN — Grand Prize (first team) ── -->
     <div id="winSection" class="hidden">
       <div class="win-hero f1">
         <span class="win-icon">🏆</span>
+        <div class="win-title">You're First!</div>
+        <div class="win-sub">First team to complete the Bielefeld Sync-Quest</div>
+      </div>
+      <div class="voucher f2" style="background:radial-gradient(ellipse at center,rgba(232,165,28,.15) 0%,transparent 70%);">
+        <div class="v-lbl">LOCALI Grand Prize — First Team</div>
+        <div class="v-pct" style="font-size:2.6rem;line-height:1.1;color:var(--gold);">€100</div>
+        <div class="v-lbl">Voucher at</div>
+        <div class="v-name">🍛 Indieflavours Bielefeld</div>
+        <div class="v-team">Mauerstraße 52, 33602 Bielefeld</div>
+        <div class="v-team" id="winTeamGrand"></div>
+        <div class="v-once">Valid 06–11 March 2026 · Screenshot this now · One-time use</div>
+      </div>
+      <div class="alert alert-ok f3">🥇 You are the first team to finish. Show this screen at Indieflavours to claim the €100 voucher.</div>
+      <div class="card f3" data-tag="At Indieflavours">
+        <h3>How to claim</h3>
+        <ul>
+          <li>Show this screen to the waiter or manager</li>
+          <li>Staff have been briefed — this is valid</li>
+          <li>Take a screenshot as backup right now</li>
+          <li>Valid 06–11 March 2026 only</li>
+        </ul>
+      </div>
+      <a href="https://maps.google.com/?q=Indieflavours+Bielefeld+Mauerstrase+52" target="_blank" class="map-btn f4">Open Indieflavours in Google Maps</a>
+    </div>
+
+    <!-- ── WIN SCREEN — Finisher (50% off, not first) ── -->
+    <div id="finisherSection" class="hidden">
+      <div class="win-hero f1">
+        <span class="win-icon">🎉</span>
         <div class="win-title">Quest Complete</div>
         <div class="win-sub">You solved the Bielefeld Sync-Quest</div>
       </div>
       <div class="voucher f2">
-        <div class="v-lbl">LOCALI Grand Prize</div>
+        <div class="v-lbl">LOCALI Finisher Reward</div>
         <div class="v-pct" style="font-size:3rem;line-height:1.1;">50% OFF</div>
-        <div class="v-lbl">— €100 if you are the first team —</div>
+        <div class="v-lbl">Your Entire Order at</div>
         <div class="v-name">🍛 Indieflavours Bielefeld</div>
         <div class="v-team">Mauerstraße 52, 33602 Bielefeld</div>
-        <div class="v-team" id="winTeam"></div>
+        <div class="v-team" id="winTeamFinisher"></div>
         <div class="v-once">Valid 06–11 March 2026 · Screenshot this now</div>
       </div>
-      <div class="alert alert-ok f3">Show this screen at Indieflavours. First team today wins €100. Every finishing team gets 50% off.</div>
-      <div class="card f3" data-tag="At Indieflavours">
-        <h3>How to claim</h3>
-        <ul>
-          <li>Show this screen to the waiter or at the counter</li>
-          <li>Staff have been briefed — this is valid</li>
-          <li>Take a screenshot as backup</li>
-          <li>Valid 06–11 March 2026 only</li>
-        </ul>
+      <div class="card c-gold f3" data-tag="Grand Prize — Already Claimed">
+        <h3>The €100 voucher has been claimed</h3>
+        <p>First place: <strong id="grandWinnerName" style="color:var(--gold);"></strong></p>
+        <p style="margin-top:.4rem;font-size:.73rem;color:var(--muted2);">You still get 50% off your entire order — that's a great reward for finishing the hunt. Congratulations.</p>
       </div>
+      <div class="alert alert-ok f3">Show this screen at Indieflavours. Staff have been briefed. Take a screenshot as backup.</div>
       <a href="https://maps.google.com/?q=Indieflavours+Bielefeld+Mauerstrase+52" target="_blank" class="map-btn f4">Open Indieflavours in Google Maps</a>
     </div>
 
@@ -202,7 +236,7 @@
     document.getElementById('rolePillWrap').innerHTML =
       `<div class="role-pill ${role.toLowerCase()}">${role==='A'?'⬡ Player A — The Scout':'⬡ Player B — The Historian'}</div>`;
 
-    if (G.get(G.K.WON) === 'yes') {
+    if (G.get(G.K.WON) === 'grand' || G.get(G.K.WON) === 'finisher') {
       show('activeHunt'); showWin();
     } else if (G.isHuntOver() && G.getStops().length === 0) {
       show('huntOver');
@@ -357,9 +391,21 @@
     });
   }
 
+  // ── JSONBin config ──────────────────────────────────────────
+  // 1. Go to jsonbin.io → sign up free → Create Bin
+  // 2. Set initial bin content to: {"winner_locked":false,"team":"","handle":"","timestamp":""}
+  // 3. Make the bin PUBLIC (so it can be read without auth)
+  // 4. Copy the Bin ID and your API key (X-Master-Key) into the two lines below
+  const JSONBIN_ID  = '69a94e5fae596e708f617fee';      // e.g. 65f3a1b2ad19ca34f8a1b2c3
+  const JSONBIN_KEY = '$2a$10$wxAJU1o8bby3pFj9bimiB.0hRadtSUKsXHUVzW1186kD0RuTkFHmu';  // e.g. $2a$10$...
+
+  const BIN_URL     = `https://api.jsonbin.io/v3/b/${JSONBIN_ID}`;
+  const BIN_HEADERS = { 'X-Master-Key': JSONBIN_KEY, 'Content-Type': 'application/json' };
+
   function submitFinalCode() {
     const val = document.getElementById('finalCode').value.trim().toUpperCase().replace(/\s/g,'');
     const err = document.getElementById('finalErr');
+
     if (val !== G.INDIE_CODE.toUpperCase()) {
       err.textContent = '✗ Not the right code. Find the LOCALI sticker at the Indieflavours entrance.';
       err.classList.remove('hidden');
@@ -367,22 +413,97 @@
       setTimeout(() => { document.getElementById('finalCode').className = ''; }, 1800);
       return;
     }
+
     err.classList.add('hidden');
-    G.set(G.K.WON, 'yes');
-    G.postForm('WINNER', {
-      [G.FORMS.WINNER.PLAYER]:    handle,
-      [G.FORMS.WINNER.PARTNER]:   partner || '',
-      [G.FORMS.WINNER.TEAMNAME]:  teamname || '',
-      [G.FORMS.WINNER.TIMESTAMP]: G.now(),
-    });
+
+    // Show loading state while we check
     hide('stateDecoder');
-    showWin();
+    show('checkingWinner');
+
+    // Step 1: Read current winner status
+    fetch(BIN_URL + '/latest', { headers: { 'X-Master-Key': JSONBIN_KEY } })
+      .then(r => r.json())
+      .then(data => {
+        const state = data.record;
+
+        if (state.winner_locked) {
+          // Winner already exists — this team gets 50% off
+          G.set(G.K.WON, 'finisher');
+          G.postForm('WINNER', {
+            [G.FORMS.WINNER.PLAYER]:    handle,
+            [G.FORMS.WINNER.PARTNER]:   partner || '',
+            [G.FORMS.WINNER.TEAMNAME]:  teamname || '',
+            [G.FORMS.WINNER.TIMESTAMP]: G.now(),
+          });
+          hide('checkingWinner');
+          showFinisher(state.team);
+        } else {
+          // No winner yet — this team claims the €100
+          const winnerData = {
+            winner_locked: true,
+            team:          teamname || handle,
+            handle:        handle,
+            partner:       partner || '',
+            timestamp:     G.now(),
+          };
+          // Step 2: Lock the bin with this team as winner
+          fetch(BIN_URL, {
+            method:  'PUT',
+            headers: BIN_HEADERS,
+            body:    JSON.stringify(winnerData),
+          })
+          .then(() => {
+            G.set(G.K.WON, 'grand');
+            G.postForm('WINNER', {
+              [G.FORMS.WINNER.PLAYER]:    handle,
+              [G.FORMS.WINNER.PARTNER]:   partner || '',
+              [G.FORMS.WINNER.TEAMNAME]:  teamname || '',
+              [G.FORMS.WINNER.TIMESTAMP]: G.now(),
+            });
+            hide('checkingWinner');
+            showGrandWinner();
+          })
+          .catch(() => {
+            // Write failed — be conservative, show as finisher
+            hide('checkingWinner');
+            showFinisher('unknown');
+          });
+        }
+      })
+      .catch(() => {
+        // Read failed (network issue) — fall back to 50% screen, don't falsely award €100
+        G.set(G.K.WON, 'finisher');
+        hide('checkingWinner');
+        showFinisher('');
+      });
+  }
+
+  function showGrandWinner() {
+    show('winSection');
+    document.getElementById('winTeamGrand').textContent =
+      (teamname ? 'Team: ' + teamname + ' · ' : '') + '@' + handle;
+  }
+
+  function showFinisher(winnerTeamName) {
+    show('finisherSection');
+    document.getElementById('winTeamFinisher').textContent =
+      (teamname ? 'Team: ' + teamname + ' · ' : '') + '@' + handle;
+    document.getElementById('grandWinnerName').textContent =
+      winnerTeamName || 'another team';
   }
 
   function showWin() {
-    show('winSection');
-    document.getElementById('winTeam').textContent =
-      (teamname ? 'Team: '+teamname+' · ' : '') + '@'+handle;
+    // Called on page reload if already won previously
+    const wonState = G.get(G.K.WON);
+    if (wonState === 'grand') {
+      showGrandWinner();
+    } else {
+      // Re-fetch winner name to display correctly on reload
+      fetch(BIN_URL + '/latest', { headers: { 'X-Master-Key': JSONBIN_KEY } })
+        .then(r => r.json())
+        .then(data => showFinisher(data.record.team))
+        .catch(() => showFinisher(''));
+    }
   }
 
   function countdown(elId, target) {
